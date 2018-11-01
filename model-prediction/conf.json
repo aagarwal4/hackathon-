@@ -4,6 +4,7 @@
   "include_top"     : false,
 
   "train_path"      : "dataset",
+  "test_path"       : "dataset-test",
   "features_path"   : "features.h5",
   "labels_path"     : "labels.h5",
   "results"         : "results.txt",
