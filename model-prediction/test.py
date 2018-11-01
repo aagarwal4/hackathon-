@@ -59,27 +59,28 @@ classifier_path = config["classifier_path"]
 
 # load the trained SVM classifier
 print ("[INFO] loading the classifier...")
-with open("../../rootkey.csv") as f:
-    ACCESS_ID = f.readline().strip().split('=')[1]
-    ACCESS_KEY = f.readline().strip().split('=')[1]
+#with open("../../rootkey.csv") as f:
+#    ACCESS_ID = f.readline().strip().split('=')[1]
+#    ACCESS_KEY = f.readline().strip().split('=')[1]
     
-s3 = boto3.resource('s3', 
-                    aws_access_key_id=ACCESS_ID,
-                    aws_secret_access_key= ACCESS_KEY)
+#s3 = boto3.resource('s3', 
+#                    aws_access_key_id=ACCESS_ID,
+#                    aws_secret_access_key= ACCESS_KEY)
 
-myBucket = s3.Bucket('hackathon-nissan')
+#myBucket = s3.Bucket('hackathon-nissan')
 
-with BytesIO() as data:
-    myBucket.download_fileobj("classifier-models.pickle", data)
-    data.seek(0)    # move back to the beginning after writing
-    classifier = pickle.load(data)
-    
+#with BytesIO() as data:
+#    myBucket.download_fileobj("classifier-models.pickle", data)
+#    data.seek(0)    # move back to the beginning after writing
+#    classifier = pickle.load(data)
+
+classifier = pickle.load(open("classifier.pickle", "rb"))   
 base_model = InceptionV3(include_top=include_top, weights=weights, input_tensor=Input(shape=(299,299,3)))
 model = Model(input=base_model.input, output=base_model.get_layer('custom').output)
 image_size = (299, 299)
 
 # get all the test labels
-train_labels = os.listdir(train_path)
+train_labels = ['MICRA-PETROL', 'REDIGO', 'SUNNY-XL', 'TERRANO-P', 'TERRANO-PRIME']
 
 test_preds = []
 testLabels = []
@@ -107,8 +108,7 @@ for i, label in enumerate(train_labels):
     flat = feature.flatten()
     flat = np.expand_dims(flat, axis=0)
     preds = classifier.predict(flat)
-    prediction = train_labels[preds[0]]
-    test_preds.append(image_path.split("/")[-1] + ' ' + prediction)
+    test_preds.append(image_path.split("/")[-1] + ' ' + train_labels[preds[0]])
     testLabels.append(image_path.split("/")[-1] + ' ' + label)
     
 test_accuracy = accuracy_score(testLabels, test_preds)

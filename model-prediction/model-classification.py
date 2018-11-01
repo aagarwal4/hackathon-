@@ -239,11 +239,11 @@ plt.show()
 train_accuracy = accuracy_score(trainLabels, preds_train)
 with open('train.txt', 'w') as f:
     f.write("The training accuracy is:" + str(train_accuracy) + '\n\n')
-#     f.write("The actual labels are:" + str([train_labels[idx] for idx in trainLabels]) + '\n\n')
-#     f.write("The predicted labels are:" + str([train_labels[idx] for idx in preds_train]) + '\n\n')
+    f.write("The actual labels are:" + str([train_labels[idx] for idx in trainLabels]) + '\n\n')
+    f.write("The predicted labels are:" + str([train_labels[idx] for idx in preds_train]) + '\n\n')
 
 val_accuracy = accuracy_score(valLabels, preds_val)
 with open('val.txt', 'w') as f:
     f.write("The validation accuracy is:" + str(val_accuracy) + '\n\n')
-#     f.write("The actual labels are:" + str([train_labels[idx] for idx in valLabels]) + '\n\n')
-#     f.write("The predicted labels are:" + str([train_labels[idx] for idx in preds_val]) + '\n\n')
+    f.write("The actual labels are:" + str([train_labels[idx] for idx in valLabels]) + '\n\n')
+    f.write("The predicted labels are:" + str([train_labels[idx] for idx in preds_val]) + '\n\n')

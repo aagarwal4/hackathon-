@@ -25,24 +25,26 @@ import boto3, os
 image_path = sys.argv[1]
 
 # load the trained SVM classifier
-print ("[INFO] loading the classifier...")
-with open("../../rootkey.csv") as f:
-    ACCESS_ID = f.readline().strip().split('=')[1]
-    ACCESS_KEY = f.readline().strip().split('=')[1]
+#print ("[INFO] loading the classifier...")
+#with open("../../rootkey.csv") as f:
+#    ACCESS_ID = f.readline().strip().split('=')[1]
+#    ACCESS_KEY = f.readline().strip().split('=')[1]
     
-s3 = boto3.resource('s3', 
-                    aws_access_key_id=ACCESS_ID,
-                    aws_secret_access_key= ACCESS_KEY)
+#s3 = boto3.resource('s3', 
+#                    aws_access_key_id=ACCESS_ID,
+#                    aws_secret_access_key= ACCESS_KEY)
 
-myBucket = s3.Bucket('hackathon-nissan')
+#myBucket = s3.Bucket('hackathon-nissan')
 
-with BytesIO() as data:
-    myBucket.download_fileobj("classifier-models.pickle", data)
-    data.seek(0)    # move back to the beginning after writing
-    classifier = pickle.load(data)
-    
+#with BytesIO() as data:
+#    myBucket.download_fileobj("classifier-models.pickle", data)
+#    data.seek(0)    # move back to the beginning after writing
+#    classifier = pickle.load(data)
+ 
+classifier = pickle.load(open("classifier.pickle", 'rb'))
+   
 # get all the train labels
-train_labels = ["SUNNY-XL", "MICRA-PETROL", "TERRANO-P", "TERRANO-PRIME", "REDIGO"]    
+train_labels = sorted(list(os.listdir('dataset')))
 base_model = InceptionV3(include_top=False, weights="imagenet", input_tensor=Input(shape=(299,299,3)))
 model = Model(input=base_model.input, output=base_model.get_layer('custom').output)
 image_size = (299, 299)
@@ -59,5 +61,4 @@ print('Classifying.........')
 preds = classifier.predict(flat)
 prediction = train_labels[preds[0]]
 print('Prediction done.........')
-K.clear_session()
 print(prediction)
